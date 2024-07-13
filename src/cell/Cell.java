@@ -1,5 +1,7 @@
 package cell;
 
+import java.util.Iterator;
+
 // Declaring a Cell class to store information and methods related to the cell.
 public class Cell {
 
@@ -42,8 +44,12 @@ public class Cell {
         this.isCancerous = isCancerous;
     }
 
-    public void setDNACoordinates(int x, int y, int value){
-        this.nucleus.setDNACoordinates(x, y, value);
+    public void setDNACoordinates(int x, int y){
+        this.nucleus.setDNACoordinates(x, y);
+    }
+
+    public Iterator getDNACoordinatesIterator(){
+        return this.nucleus.getDNACoordinatesIterator();
     }
 
     public void setAlphaParticleCoordinates(int x, int y, int value){
@@ -74,5 +80,7 @@ public class Cell {
         return this.nucleus.getNucleusRadius();
    }
 
-   
+   public int getDNARadius(){
+        return this.nucleus.getDNARadius();
+   }
 }
