@@ -14,29 +14,36 @@ public class Cells {
     private int tumourRegionWidthMax;
     private int tumourRegionLengthMin;
     private int tumourRegionLengthMax;
-    private HashMap<Integer, Integer> alphaSourceCoordinates;
+    private int[][] alphaSourceParticles;
     private int alphaRegionRadius;
     private int alphaParticleRadius;
     private int alphaRegionX;
     private int alphaRegionY;
+    private int alphaNum;
 
-    public Cells() {
+
+    public Cells(int alphaNum) {
         this.borderSize = 5;
         this.cellRadius = 50;
         this.tumourRegionWidthMin = 350;
         this.tumourRegionWidthMax = 1750;
         this.tumourRegionLengthMin = 300;
         this.tumourRegionLengthMax = 1000;
-        this.alphaSourceCoordinates = new HashMap<Integer, Integer>();
+        this.alphaSourceParticles = new int[alphaNum][alphaNum];
         this.alphaRegionRadius = 40;
         this.alphaParticleRadius = 5;
-        this.alphaRegionX = 0;
-        this.alphaRegionY = 0;
+        this.alphaNum = alphaNum;
     }
 
-    public Iterator getAlphaCoordinatesIterator(){
-        return this.alphaSourceCoordinates.entrySet().iterator();
+    public void getAlphaSourceParticles(){
+        for(int i = 0; i < this.alphaSourceParticles[0].length; i++){
+            System.out.println("Particle" + i + ":");
+            System.out.println("Coordinates: (" + this.alphaSourceParticles[0][i] + "," + this.alphaSourceParticles[1][i] + ")");
+            System.out.println("Speed on the X-axis: " + this.alphaSourceParticles[2][i] + "m/s");
+            System.out.println("Speed on the Y-axis: " + this.alphaSourceParticles[3][i] + "m/s\n\n");
+        }
     }
+
     public ArrayList<Cell> initialiseCells(){
         int numberOfCells = 10;
         ArrayList<Cell> cells = new ArrayList<Cell>();
@@ -214,19 +221,43 @@ public class Cells {
 
             } while(!iswithinAlphaRegion);
 
-            this.alphaSourceCoordinates.put(alphaX, alphaY);
+            this.alphaSourceParticles[0][i] = alphaX;
+            this.alphaSourceParticles[1][i] = alphaY;
         }
     }
 
     public void drawAlphaProteins(Canvas screen, Pen pen){
         Color alphaColor = Color.YELLOW;
-        Iterator alphaIterator = this.getAlphaCoordinatesIterator();
-        while(alphaIterator.hasNext()){
-            Map.Entry coordinates = (Map.Entry)alphaIterator.next();
-            int x = (int)coordinates.getKey();
-            int y = (int)coordinates.getValue();
+        for(int i = 0; i < alphaSourceParticles[0].length; i++){
+            int x = alphaSourceParticles[0][i];
+            int y = alphaSourceParticles[1][i];
             pen.drawCircle(x, y, this.alphaParticleRadius, alphaColor, true);
             screen.update();
+        }
+    }
+
+    public void generateAlphaSourceSpeeds(Random random){
+        for(int i = 0; i < alphaSourceParticles[0].length; i++){
+            this.alphaSourceParticles[2][i] = random.nextInt(11) - 5;
+            this.alphaSourceParticles[3][i] = random.nextInt(11) - 5;
+        }
+    }
+    public void generateAlphaParticleDiffusion(Canvas screen, Pen pen, ArrayList<Cell> cells, int numOfSteps){
+        for(int i = 0; i < numOfSteps; i++){
+            screen.clear();
+
+            this.drawCells(screen, pen, cells);
+            this.drawDNAProteins(screen, pen, cells);
+            this.drawRepairProteins(screen, pen, cells);
+            this.drawAlphaProteins(screen, pen);
+
+            for(int j = 0; j < this.alphaSourceParticles[0].length; j++){
+                this.alphaSourceParticles[0][j] += this.alphaSourceParticles[2][j];
+                this.alphaSourceParticles[1][j] += this.alphaSourceParticles[3][j];
+            }
+
+            screen.update();
+            screen.pause(5);
         }
     }
 }
