@@ -52,6 +52,13 @@ public class Cell {
         return this.nucleus.getDNACoordinatesIterator();
     }
 
+    public void setRepairProteinCoordinates(int x, int y){
+        this.nucleus.setRepairProteinCoordinates(x, y);
+    }
+
+    public Iterator getRepairProteinCoordinatesIterator(){
+        return this.nucleus.getRepairProteinCoordinatesIterator();
+    }
     public void setAlphaParticleCoordinates(int x, int y, int value){
         this.nucleus.setAlphaParticleCoordinates(x, y, value);
     }
@@ -82,5 +89,9 @@ public class Cell {
 
    public int getDNARadius(){
         return this.nucleus.getDNARadius();
+   }
+
+   public int getRepairRadius(){
+        return this.nucleus.getRepairRadius();
    }
 }

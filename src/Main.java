@@ -78,6 +78,28 @@ public class Main {
         }
     }
 
+    public static void generateRepairProteins(ArrayList<Cell> cells, int repairNum, Random random){
+        for(Cell cell : cells){
+            for(int i = 0; i < repairNum; i++){
+                int repairX, repairY;
+                boolean isWithinNucleus;
+
+                do{
+                    isWithinNucleus = false;
+                    repairX = random.nextInt(cell.getX()) + cell.getNucleusRadius();
+                    repairY = random.nextInt(cell.getY()) + cell.getNucleusRadius();
+
+                    if(isWithinNucleus(cell, repairX, repairY)){
+                        isWithinNucleus = true;
+                    }
+
+                } while(!isWithinNucleus);
+
+                cell.setRepairProteinCoordinates(repairX, repairY);
+            }
+        }
+    }
+
     public static void drawCells(Canvas screen, Pen pen, ArrayList<Cell> cells){
         for(Cell cell : cells){
             Color cellColor = cell.getIsCancerous() ? Color.RED : Color.WHITE;
@@ -98,7 +120,20 @@ public class Main {
                 pen.drawCircle(x, y, cell.getDNARadius(), DNAProteinColor, true);
                 screen.update();
             }
+        }
+    }
 
+    public static void drawRepairProteins(Canvas screen, Pen pen, ArrayList<Cell> cells){
+        for(Cell cell : cells){
+            Color repairProteinColor = Color.GREEN;
+            Iterator repairIterator = cell.getRepairProteinCoordinatesIterator();
+            while(repairIterator.hasNext()){
+                Map.Entry coordinates = (Map.Entry)repairIterator.next();
+                int x = (int)coordinates.getKey();
+                int y = (int)coordinates.getValue();
+                pen.drawCircle(x, y, cell.getRepairRadius(), repairProteinColor, true);
+                screen.update();
+            }
         }
     }
 
@@ -108,14 +143,18 @@ public class Main {
         int screenWidth = 2000;
         int screenHeight = 1300;
         int DNANum = 10;
+        int repairNum = 10;
 
         Canvas screen = new Canvas(screenWidth, screenHeight, 0, 0);
         Pen pen = new Pen(screen);
         Random random = new Random();
+
         generateCellCoordinates(screenWidth, screenHeight, cells, random);
         generateDNAProteins(cells, DNANum, random);
+        generateRepairProteins(cells, repairNum, random);
 
         drawCells(screen, pen, cells);
         drawDNAProteins(screen, pen, cells);
+        drawRepairProteins(screen, pen, cells);
     }
 }
