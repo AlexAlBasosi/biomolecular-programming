@@ -59,9 +59,6 @@ public class Cell {
     public Iterator getRepairProteinCoordinatesIterator(){
         return this.nucleus.getRepairProteinCoordinatesIterator();
     }
-    public void setAlphaParticleCoordinates(int x, int y, int value){
-        this.nucleus.setAlphaParticleCoordinates(x, y, value);
-    }
 
    public void setX(int x){
         this.x = x;
