@@ -5,6 +5,8 @@ public class Nucleus {
     private int sizeN;
     private int sizeM;
 
+    private int nucleusRadius;
+
     // Here we declare the 2D arrays but don't initialise them yet.
     private int[][] DNACoordinates;
     private int[][] alphaParticleCoordinates;
@@ -12,6 +14,7 @@ public class Nucleus {
     public Nucleus(){
         this.sizeN = 1000;
         this.sizeM = 1000;
+        this.nucleusRadius = 40;
         this.DNACoordinates = new int[sizeN][sizeM];
         this.alphaParticleCoordinates = new int[sizeN][sizeM];
     }
@@ -19,6 +22,7 @@ public class Nucleus {
     public Nucleus(int sizeN, int sizeM){
         this.sizeN = sizeN;
         this.sizeM = sizeM;
+        this.nucleusRadius = 40;
         this.DNACoordinates = new int[sizeN][sizeM];
         this.alphaParticleCoordinates = new int[sizeN][sizeM];
     }
@@ -31,6 +35,14 @@ public class Nucleus {
     // This method sets the M dimension size of the 2D arrays. For example cell.setSizeM(10);
     public void setSizeM(int sizeM){
         this.sizeM = sizeM;
+    }
+
+    public void setNucleusRadius(int radius){
+        this.nucleusRadius = radius;
+    }
+
+    public int getNucleusRadius(){
+        return this.nucleusRadius;
     }
 
     // Here we specify the DNA Coordinates of the cell. For example cell.setDNACoordinates(10, 10, 1);
