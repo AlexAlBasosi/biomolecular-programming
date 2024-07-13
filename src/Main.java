@@ -21,6 +21,7 @@ public class Main {
         generateCellCoordinates(screenWidth, screenHeight, cells, random);
         generateDNAProteins(cells, DNANum, random);
         generateRepairProteins(cells, repairNum, random);
+        generateTumourRegion(cells);
 
         drawCells(screen, pen, cells);
         drawDNAProteins(screen, pen, cells);

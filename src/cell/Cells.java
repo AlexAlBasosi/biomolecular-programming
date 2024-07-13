@@ -31,7 +31,7 @@ public class Cells {
     }
 
     public static void generateCellCoordinates(int screenWidth, int screenHeight, ArrayList<Cell> cells, Random random){
-        int borderSize = 10;
+        int borderSize = 5;
         int cellRadius = 50;
         for(Cell cell: cells){
             int x,y;
@@ -135,6 +135,17 @@ public class Cells {
                 int y = (int)coordinates.getValue();
                 pen.drawCircle(x, y, cell.getRepairRadius(), repairProteinColor, true);
                 screen.update();
+            }
+        }
+    }
+
+    public static void generateTumourRegion(ArrayList<Cell> cells){
+        int widthMin = 350, widthMax = 1750;
+        int lengthMin = 300, lengthMax = 1000;
+
+        for(Cell cell : cells) {
+            if((cell.getX() >= widthMin && cell.getX() <= widthMax) && (cell.getY() >= lengthMin && cell.getY() <= lengthMax)){
+                cell.setIsCancerous(true);
             }
         }
     }
