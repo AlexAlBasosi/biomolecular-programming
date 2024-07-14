@@ -79,4 +79,8 @@ public class Cell {
    public int getRepairRadius(){
         return this.nucleus.getRepairRadius();
    }
+
+   public void inflictDNADamage(){
+        this.nucleus.inflictDNADamage();
+   }
 }

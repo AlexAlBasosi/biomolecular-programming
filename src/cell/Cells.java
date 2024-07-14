@@ -142,11 +142,12 @@ public class Cells {
 
     public void drawDNAProteins(Canvas screen, Pen pen, ArrayList<Cell> cells){
         for(Cell cell : cells){
-            Color DNAProteinColor = Color.BLUE;
+            Color DNAProteinColor;
             int[][] DNACoordinates = cell.getDNACoordinates();
             for(int i = 0; i < DNACoordinates[0].length; i++){
                 int x = DNACoordinates[0][i];
                 int y = DNACoordinates[1][i];
+                DNAProteinColor = DNACoordinates[2][i] == 1 ? Color.RED : Color.BLUE;
                 pen.drawCircle(x, y, cell.getDNARadius(), DNAProteinColor, true);
                 screen.update();
             }
@@ -226,8 +227,11 @@ public class Cells {
         for(int i = 0; i < alphaSourceParticles[0].length; i++){
             int x = alphaSourceParticles[0][i];
             int y = alphaSourceParticles[1][i];
-            pen.drawCircle(x, y, this.alphaParticleRadius, alphaColor, true);
-            screen.update();
+
+            if(!(x == 0 && y == 0)){
+                pen.drawCircle(x, y, this.alphaParticleRadius, alphaColor, true);
+                screen.update();
+            }
         }
     }
 
@@ -239,9 +243,58 @@ public class Cells {
     }
 
     public void generateAlphaParticleDiffusion(){
-        for(int j = 0; j < this.alphaSourceParticles[0].length; j++){
-            this.alphaSourceParticles[0][j] += this.alphaSourceParticles[2][j];
-            this.alphaSourceParticles[1][j] += this.alphaSourceParticles[3][j];
+        for(int i = 0; i < this.alphaSourceParticles[0].length; i++){
+            this.alphaSourceParticles[0][i] += this.alphaSourceParticles[2][i];
+            this.alphaSourceParticles[1][i] += this.alphaSourceParticles[3][i];
+        }
+    }
+
+    public boolean isAlphaParticleInProximityToCell(Cell cell, int alphaX, int alphaY){
+        double distance = Math.sqrt(Math.pow(alphaX - cell.getX(), 2) + Math.pow(alphaY - cell.getY(), 2));
+
+        return distance >= (cell.getCellRadius() - 10) && distance <= (cell.getCellRadius() + 10);
+    }
+
+    public void removeStoppedAlphaParticle(int columnNumber){
+        for(int i = 0; i < 4; i++){
+            this.alphaSourceParticles[i][columnNumber] = 0;
+        }
+    }
+
+    public void reduceAlphaParticleSpeed(int columnNumber){
+        if(this.alphaSourceParticles[2][columnNumber] > 0 && this.alphaSourceParticles[3][columnNumber] == 0){
+            this.alphaSourceParticles[2][columnNumber]--;
+        } else if(this.alphaSourceParticles[2][columnNumber] == 0 && this.alphaSourceParticles[3][columnNumber] > 0){
+            this.alphaSourceParticles[3][columnNumber]--;
+        } else if(this.alphaSourceParticles[2][columnNumber] < 0 && this.alphaSourceParticles[3][columnNumber] == 0){
+            this.alphaSourceParticles[2][columnNumber]++;
+        } else if(this.alphaSourceParticles[2][columnNumber] == 0 && this.alphaSourceParticles[3][columnNumber] < 0){
+            this.alphaSourceParticles[3][columnNumber]++;
+        } else if(this.alphaSourceParticles[2][columnNumber] > 0 && this.alphaSourceParticles[3][columnNumber] > 0){
+            this.alphaSourceParticles[2][columnNumber]--;
+            this.alphaSourceParticles[3][columnNumber]--;
+        } else if(this.alphaSourceParticles[2][columnNumber] < 0 && this.alphaSourceParticles[3][columnNumber] < 0){
+            this.alphaSourceParticles[2][columnNumber]++;
+            this.alphaSourceParticles[3][columnNumber]++;
+        } else if(this.alphaSourceParticles[2][columnNumber] < 0 && this.alphaSourceParticles[3][columnNumber] > 0){
+            this.alphaSourceParticles[2][columnNumber]++;
+            this.alphaSourceParticles[3][columnNumber]--;
+        } else if(this.alphaSourceParticles[2][columnNumber] > 0 && this.alphaSourceParticles[3][columnNumber] < 0){
+            this.alphaSourceParticles[2][columnNumber]--;
+            this.alphaSourceParticles[3][columnNumber]++;
+        } else {
+            this.removeStoppedAlphaParticle(columnNumber);
+        }
+    }
+
+    public void inflictCellDamageCheck(ArrayList<Cell> cells){
+        for(int i = 0; i < this.alphaSourceParticles[0].length; i++){
+            for(Cell cell : cells){
+                if(isAlphaParticleInProximityToCell(cell, this.alphaSourceParticles[0][i], this.alphaSourceParticles[1][i])){
+                    cell.inflictDNADamage();
+                    this.reduceAlphaParticleSpeed(i);
+                }
+            }
         }
     }
 
@@ -255,6 +308,7 @@ public class Cells {
             this.drawAlphaProteins(screen, pen);
 
             this.generateAlphaParticleDiffusion();
+            this.inflictCellDamageCheck(cells);
 
             screen.update();
             screen.pause(5);

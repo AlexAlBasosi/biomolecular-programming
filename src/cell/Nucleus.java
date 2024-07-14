@@ -17,7 +17,7 @@ public class Nucleus {
     private int[][] repairProteinCoordinates;
 
     public Nucleus(int numberOfCells){
-        this.numberOfRows = 2;
+        this.numberOfRows = 3;
         this.numberOfCells = numberOfCells;
         this.nucleusRadius = 40;
         this.DNARadius = 5;
@@ -57,5 +57,14 @@ public class Nucleus {
 
     public int[][] getRepairProteinCoordinates(){
         return this.repairProteinCoordinates;
+    }
+
+    public void inflictDNADamage(){
+        for(int i = 0; i < this.DNACoordinates[0].length; i++){
+            if(this.DNACoordinates[2][i] != 1) {
+                this.DNACoordinates[2][i] = 1;
+                break;
+            }
+        }
     }
 }

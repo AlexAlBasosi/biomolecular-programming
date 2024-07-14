@@ -39,7 +39,6 @@ public class Main {
             Row 2: Contains X speeds
             Rows 3: Contains Y speeds
          */
-        // TODO: Add logic to kill DNA particles when alpha particle is close to a cell
         // TODO: Add logic to bind repair protein to damaged DNA particles
         // TODO: Add logic to convert to 'necrotic cell' when DNA particle damage exceeds threshold
         // TODO: Add comments
