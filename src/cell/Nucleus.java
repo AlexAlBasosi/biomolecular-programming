@@ -1,12 +1,17 @@
 package cell;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class Nucleus {
     // These are the sizes of the 2-dimensional arrays. So it will be a NXM array.
-    private int numberOfRows;
+    private int numberOfRowsDNA;
+    private int numberOfRowsRepair;
     private int numberOfCells;
+    private int numberOfDNAParticles;
+    private int numberOfRepairParticles;
     private int nucleusRadius;
     private int DNARadius;
     private int repairRadius;
@@ -16,14 +21,17 @@ public class Nucleus {
 
     private int[][] repairProteinCoordinates;
 
-    public Nucleus(int numberOfCells){
-        this.numberOfRows = 3;
+    public Nucleus(int numberOfCells, int numberOfDNAParticles, int numberOfRepairParticles){
+        this.numberOfRowsDNA = 3;
+        this.numberOfRowsRepair = 5;
         this.numberOfCells = numberOfCells;
+        this.numberOfDNAParticles = numberOfDNAParticles;
+        this.numberOfRepairParticles = numberOfRepairParticles;
         this.nucleusRadius = 40;
         this.DNARadius = 5;
         this.repairRadius = 5;
-        this.DNACoordinates = new int[this.numberOfRows][this.numberOfCells];
-        this.repairProteinCoordinates = new int[this.numberOfRows][this.numberOfCells];
+        this.DNACoordinates = new int[this.numberOfRowsDNA][this.numberOfDNAParticles];
+        this.repairProteinCoordinates = new int[this.numberOfRowsRepair][this.numberOfRepairParticles];
     }
 
     public int getNucleusRadius(){
@@ -61,10 +69,75 @@ public class Nucleus {
 
     public void inflictDNADamage(){
         for(int i = 0; i < this.DNACoordinates[0].length; i++){
-            if(this.DNACoordinates[2][i] != 1) {
+            if(this.DNACoordinates[2][i] == 0) {
                 this.DNACoordinates[2][i] = 1;
                 break;
             }
         }
+    }
+
+    public ArrayList<Integer> getDamagedDNAIndices(){
+        ArrayList<Integer> damagedDNAIndices = new ArrayList<>();
+        for(int i = 0; i < this.DNACoordinates[0].length; i++){
+            if(this.DNACoordinates[2][i] == 1){
+                damagedDNAIndices.add(i);
+            }
+        }
+
+        return damagedDNAIndices;
+    }
+
+    public int getDamagedDNACount(){
+        int damagedDNACount = 0;
+        for(int i = 0; i < this.DNACoordinates[0].length; i++){
+            if(this.DNACoordinates[2][i] == 1){
+                damagedDNACount++;
+            }
+        }
+
+        return damagedDNACount;
+    }
+
+    public int getRepairParticleCount(){
+        int repairParticleCount = 0;
+        for(int i = 0; i < this.repairProteinCoordinates[0].length; i++){
+            repairParticleCount++;
+        }
+
+        return repairParticleCount;
+    }
+
+    public void repairDNAParticles(){
+        ArrayList<Integer> damagedDNAIndices = this.getDamagedDNAIndices();
+        int damagedDNACount = damagedDNAIndices.size();
+        int repairParticleCount = this.getRepairParticleCount();
+
+        if(repairParticleCount >= damagedDNACount){
+            for(int i = 0; i < damagedDNAIndices.size(); i++){
+                this.DNACoordinates[2][i] = 0;
+            }
+        } else if(repairParticleCount < damagedDNACount){
+            List<Integer> slicedDamagedDNAIndices = damagedDNAIndices.subList(0, repairParticleCount);
+            for(int i = 0; i < slicedDamagedDNAIndices.size(); i++){
+                this.DNACoordinates[2][i] = 0;
+                break;
+            }
+        }
+    }
+
+    public void getDNAParticles(){
+        for(int i = 0; i < this.DNACoordinates[0].length; i++){
+            System.out.println("Protein " + i + ":");
+            System.out.println("isDamaged: " + this.DNACoordinates[2][i] + "\n\n");
+        }
+    }
+
+    public boolean isDamageFatal(){
+        int damagedDNACount = this.getDamagedDNACount();
+        if(damagedDNACount >= this.numberOfDNAParticles / 2){
+            return true;
+        }
+
+        return false;
     }
 }

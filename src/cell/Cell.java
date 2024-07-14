@@ -1,6 +1,8 @@
 package cell;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 // Declaring a Cell class to store information and methods related to the cell.
 public class Cell {
@@ -11,15 +13,19 @@ public class Cell {
     private int y;
     private int cellRadius;
     private Nucleus nucleus;
+    private boolean isDamaged;
+    private boolean isNecrotic;
 
     // This is an overloaded constructor. When you create a Cell object, you can specify whether the cell
     // is cancerous, and the size of the 2D arrays. For example, Cell cell = new Cell(false, 10, 10);
-    public Cell(boolean isCancerous, int numberOfCells){
+    public Cell(boolean isCancerous, int numberOfCells, int numberOfDNAParticles, int numberOfRepairParticles){
         this.cellRadius = 50;
         this.x = 0;
         this.y = 0;
         this.isCancerous = isCancerous;
-        this.nucleus = new Nucleus(numberOfCells);
+        this.nucleus = new Nucleus(numberOfCells, numberOfDNAParticles, numberOfRepairParticles);
+        this.isDamaged = false;
+        this.isNecrotic = false;
     }
 
     public boolean getIsCancerous(){
@@ -82,5 +88,24 @@ public class Cell {
 
    public void inflictDNADamage(){
         this.nucleus.inflictDNADamage();
+        this.isDamaged = true;
    }
+
+   public boolean getIsDamaged(){
+        return this.isDamaged;
+   }
+
+   public void repairDNAParticles(){
+        this.nucleus.repairDNAParticles();
+    }
+
+    public void isNectoticCheck(){
+        if(this.nucleus.isDamageFatal()){
+            this.isNecrotic = true;
+        }
+    }
+
+    public boolean getIsNecrotic(){
+        return this.isNecrotic;
+    }
 }

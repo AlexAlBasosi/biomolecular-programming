@@ -5,6 +5,7 @@ import nano.Pen;
 
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Cells {
 
@@ -34,18 +35,18 @@ public class Cells {
     }
 
     public void getAlphaSourceParticles(){
-        for(int i = 0; i < this.alphaSourceParticles[0].length; i++){
+        for(int i = 0; i < this.alphaSourceParticles[0][i]; i++){
             System.out.println("Particle" + i + ":");
-            System.out.println("Coordinates: (" + this.alphaSourceParticles[0][i] + "," + this.alphaSourceParticles[1][i] + ")");
+            System.out.println("Coordinates: (" + this.alphaSourceParticles + "," + this.alphaSourceParticles[1][i] + ")");
             System.out.println("Speed on the X-axis: " + this.alphaSourceParticles[2][i] + "m/s");
             System.out.println("Speed on the Y-axis: " + this.alphaSourceParticles[3][i] + "m/s\n\n");
         }
     }
 
-    public ArrayList<Cell> initialiseCells(int numberOfCells){
+    public ArrayList<Cell> initialiseCells(int numberOfCells, int numberOfDNAParticles, int numberOfRepairParticles){
         ArrayList<Cell> cells = new ArrayList<>();
         for(int i = 0; i < numberOfCells; i++) {
-            cells.add(new Cell(false, numberOfCells));
+            cells.add(new Cell(false, numberOfCells, numberOfDNAParticles, numberOfRepairParticles));
         }
 
         return cells;
@@ -133,7 +134,16 @@ public class Cells {
 
     public void drawCells(Canvas screen, Pen pen, ArrayList<Cell> cells){
         for(Cell cell : cells){
-            Color cellColor = cell.getIsCancerous() ? Color.RED : Color.WHITE;
+            Color cellColor;
+
+            if(cell.getIsCancerous()){
+                cellColor = Color.RED;
+            } else if(cell.getIsNecrotic()){
+                cellColor = Color.GRAY;
+            } else {
+                cellColor = Color.WHITE;
+            }
+
             pen.drawCircle(cell.getX(), cell.getY(), cell.getCellRadius(), cellColor, false);
             pen.drawCircle(cell.getX(), cell.getY(), cell.getNucleusRadius(), cellColor, false);
             screen.update();
@@ -287,7 +297,7 @@ public class Cells {
         }
     }
 
-    public void inflictCellDamageCheck(ArrayList<Cell> cells){
+    public void inflictCellDamage(ArrayList<Cell> cells){
         for(int i = 0; i < this.alphaSourceParticles[0].length; i++){
             for(Cell cell : cells){
                 if(isAlphaParticleInProximityToCell(cell, this.alphaSourceParticles[0][i], this.alphaSourceParticles[1][i])){
@@ -298,9 +308,24 @@ public class Cells {
         }
     }
 
+    public void repairDNAParticles(ArrayList<Cell> cells){
+        for(Cell cell : cells){
+            if(cell.getIsDamaged()){
+                cell.repairDNAParticles();
+            }
+        }
+    }
+
+    public void isNecroticCheck(ArrayList<Cell> cells){
+        for(Cell cell : cells){
+            cell.isNectoticCheck();
+        }
+    }
+
     public void runCanvasSimulation(Canvas screen, Pen pen, ArrayList<Cell> cells, int numOfSteps){
         for(int i = 0; i < numOfSteps; i++){
             screen.clear();
+
 
             this.drawCells(screen, pen, cells);
             this.drawDNAProteins(screen, pen, cells);
@@ -308,10 +333,11 @@ public class Cells {
             this.drawAlphaProteins(screen, pen);
 
             this.generateAlphaParticleDiffusion();
-            this.inflictCellDamageCheck(cells);
+            this.inflictCellDamage(cells);
+            this.isNecroticCheck(cells);
 
             screen.update();
-            screen.pause(5);
+            screen.pause(50);
         }
     }
 }

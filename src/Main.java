@@ -7,17 +7,17 @@ import nano.*;
 import java.util.Random;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args){
         int screenWidth = 2000;
         int screenHeight = 1300;
         int numberOfCells = 10;
-        int numberOfDNAParticles = 10;
+        int numberOfDNAParticles = 20;
         int numberOfRepairParticles = 10;
         int numberOfAlphaParticles = 50;
         int numOfSteps = 1000;
 
         Cells cells = new Cells(numberOfAlphaParticles);
-        ArrayList<Cell> cellsList = cells.initialiseCells(numberOfCells);
+        ArrayList<Cell> cellsList = cells.initialiseCells(numberOfCells, numberOfDNAParticles, numberOfRepairParticles);
 
         Canvas screen = new Canvas(screenWidth, screenHeight);
         Pen pen = new Pen(screen);
@@ -33,14 +33,31 @@ public class Main {
 
         cells.runCanvasSimulation(screen, pen, cellsList, numOfSteps);
 
-        /* TODO: 2D Arrays
+        /*  alpha particle array
             Row 0: Contains X Coordinates
             Row 1: Contains Y Coordinates
             Row 2: Contains X speeds
             Rows 3: Contains Y speeds
          */
+
+        /* DNA coordinate array
+        * row 0: Contains X coordinate
+        * row 1: Contains Y coordinates
+        * row 2: isDamaged (1 or 0)
+        * */
+
+        /* Repair protein array
+        * row 0: x coordinate
+        * row 1: y coordinate
+        * row 2: isBound (1 or 0)
+        * row 3: isReadyForRepair (1 or 0)
+        * row 4: index of bound DNA molecule
+        * */
+
         // TODO: Add logic to bind repair protein to damaged DNA particles
         // TODO: Add logic to convert to 'necrotic cell' when DNA particle damage exceeds threshold
+        // TODO: (if you can) add animation for binding repair protein to damaged DNA protein
+        // TODO: (if you can) add animation for moving molecules within nucleus
         // TODO: Add comments
         // TODO: Update README
     }
