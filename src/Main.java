@@ -31,7 +31,7 @@ public class Main {
         cells.generateAlphaCoordinates(numberOfAlphaParticles, random);
         cells.generateAlphaSourceSpeeds(random);
 
-        cells.generateAlphaParticleDiffusion(screen, pen, cellsList, numOfSteps);
+        cells.runCanvasSimulation(screen, pen, cellsList, numOfSteps);
 
         /* TODO: 2D Arrays
             Row 0: Contains X Coordinates
@@ -43,5 +43,6 @@ public class Main {
         // TODO: Add logic to bind repair protein to damaged DNA particles
         // TODO: Add logic to convert to 'necrotic cell' when DNA particle damage exceeds threshold
         // TODO: Add comments
+        // TODO: Update README
     }
 }

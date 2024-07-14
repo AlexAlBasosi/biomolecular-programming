@@ -237,7 +237,15 @@ public class Cells {
             this.alphaSourceParticles[3][i] = random.nextInt(11) - 5;
         }
     }
-    public void generateAlphaParticleDiffusion(Canvas screen, Pen pen, ArrayList<Cell> cells, int numOfSteps){
+
+    public void generateAlphaParticleDiffusion(){
+        for(int j = 0; j < this.alphaSourceParticles[0].length; j++){
+            this.alphaSourceParticles[0][j] += this.alphaSourceParticles[2][j];
+            this.alphaSourceParticles[1][j] += this.alphaSourceParticles[3][j];
+        }
+    }
+
+    public void runCanvasSimulation(Canvas screen, Pen pen, ArrayList<Cell> cells, int numOfSteps){
         for(int i = 0; i < numOfSteps; i++){
             screen.clear();
 
@@ -246,10 +254,7 @@ public class Cells {
             this.drawRepairProteins(screen, pen, cells);
             this.drawAlphaProteins(screen, pen);
 
-            for(int j = 0; j < this.alphaSourceParticles[0].length; j++){
-                this.alphaSourceParticles[0][j] += this.alphaSourceParticles[2][j];
-                this.alphaSourceParticles[1][j] += this.alphaSourceParticles[3][j];
-            }
+            this.generateAlphaParticleDiffusion();
 
             screen.update();
             screen.pause(5);
