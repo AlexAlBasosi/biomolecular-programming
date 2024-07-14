@@ -10,29 +10,30 @@ public class Main {
     public static void main(String[] args) {
         int screenWidth = 2000;
         int screenHeight = 1300;
-        int DNANum = 10;
-        int repairNum = 10;
-        int alphaNum = 50;
+        int numberOfCells = 10;
+        int numberOfDNAParticles = 10;
+        int numberOfRepairParticles = 10;
+        int numberOfAlphaParticles = 50;
         int numOfSteps = 1000;
 
-        Cells cells = new Cells(alphaNum);
-        ArrayList<Cell> cellsList = cells.initialiseCells();
+        Cells cells = new Cells(numberOfAlphaParticles);
+        ArrayList<Cell> cellsList = cells.initialiseCells(numberOfCells);
 
-        Canvas screen = new Canvas(screenWidth, screenHeight, 0, 0);
+        Canvas screen = new Canvas(screenWidth, screenHeight);
         Pen pen = new Pen(screen);
         Random random = new Random();
 
         cells.generateCellCoordinates(screenWidth, screenHeight, cellsList, random);
-        cells.generateDNAProteins(cellsList, DNANum, random);
-        cells.generateRepairProteins(cellsList, repairNum, random);
+        cells.generateDNAProteins(cellsList, numberOfDNAParticles, random);
+        cells.generateRepairProteins(cellsList, numberOfRepairParticles, random);
         cells.generateTumourRegion(cellsList);
         cells.generateAlphaRegion(cellsList, screenWidth, screenHeight, random);
-        cells.generateAlphaCoordinates(alphaNum, random);
+        cells.generateAlphaCoordinates(numberOfAlphaParticles, random);
         cells.generateAlphaSourceSpeeds(random);
 
         cells.generateAlphaParticleDiffusion(screen, pen, cellsList, numOfSteps);
 
-        /* TODO: Refactor Hashmaps into 2D Arrays
+        /* TODO: 2D Arrays
             Row 0: Contains X Coordinates
             Row 1: Contains Y Coordinates
             Row 2: Contains X speeds

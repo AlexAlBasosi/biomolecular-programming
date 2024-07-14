@@ -19,7 +19,6 @@ public class Cells {
     private int alphaParticleRadius;
     private int alphaRegionX;
     private int alphaRegionY;
-    private int alphaNum;
 
 
     public Cells(int alphaNum) {
@@ -32,7 +31,6 @@ public class Cells {
         this.alphaSourceParticles = new int[alphaNum][alphaNum];
         this.alphaRegionRadius = 40;
         this.alphaParticleRadius = 5;
-        this.alphaNum = alphaNum;
     }
 
     public void getAlphaSourceParticles(){
@@ -44,11 +42,10 @@ public class Cells {
         }
     }
 
-    public ArrayList<Cell> initialiseCells(){
-        int numberOfCells = 10;
-        ArrayList<Cell> cells = new ArrayList<Cell>();
+    public ArrayList<Cell> initialiseCells(int numberOfCells){
+        ArrayList<Cell> cells = new ArrayList<>();
         for(int i = 0; i < numberOfCells; i++) {
-            cells.add(new Cell(false, 10, 10));
+            cells.add(new Cell(false, numberOfCells));
         }
 
         return cells;
@@ -90,9 +87,9 @@ public class Cells {
         return distance + cell.getDNARadius() <= cell.getNucleusRadius();
     }
 
-    public void generateDNAProteins(ArrayList<Cell> cells, int DNANum, Random random){
+    public void generateDNAProteins(ArrayList<Cell> cells, int numberOfDNAParticles, Random random){
         for(Cell cell : cells) {
-            for(int i = 0; i < DNANum; i++){
+            for(int i = 0; i < numberOfDNAParticles; i++){
                 int DNAX, DNAY;
                 boolean isWithinNucleus;
 
@@ -107,14 +104,14 @@ public class Cells {
 
                 } while(!isWithinNucleus);
 
-                cell.setDNACoordinates(DNAX, DNAY);
+                cell.setDNACoordinates(i, DNAX, DNAY);
             }
         }
     }
 
-    public void generateRepairProteins(ArrayList<Cell> cells, int repairNum, Random random){
+    public void generateRepairProteins(ArrayList<Cell> cells, int numberOfRepairParticles, Random random){
         for(Cell cell : cells){
-            for(int i = 0; i < repairNum; i++){
+            for(int i = 0; i < numberOfRepairParticles; i++){
                 int repairX, repairY;
                 boolean isWithinNucleus;
 
@@ -129,7 +126,7 @@ public class Cells {
 
                 } while(!isWithinNucleus);
 
-                cell.setRepairProteinCoordinates(repairX, repairY);
+                cell.setRepairProteinCoordinates(i, repairX, repairY);
             }
         }
     }
@@ -146,11 +143,10 @@ public class Cells {
     public void drawDNAProteins(Canvas screen, Pen pen, ArrayList<Cell> cells){
         for(Cell cell : cells){
             Color DNAProteinColor = Color.BLUE;
-            Iterator DNAIterator = cell.getDNACoordinatesIterator();
-            while(DNAIterator.hasNext()){
-                Map.Entry coordinates = (Map.Entry)DNAIterator.next();
-                int x = (int)coordinates.getKey();
-                int y = (int)coordinates.getValue();
+            int[][] DNACoordinates = cell.getDNACoordinates();
+            for(int i = 0; i < DNACoordinates[0].length; i++){
+                int x = DNACoordinates[0][i];
+                int y = DNACoordinates[1][i];
                 pen.drawCircle(x, y, cell.getDNARadius(), DNAProteinColor, true);
                 screen.update();
             }
@@ -160,11 +156,10 @@ public class Cells {
     public void drawRepairProteins(Canvas screen, Pen pen, ArrayList<Cell> cells){
         for(Cell cell : cells){
             Color repairProteinColor = Color.GREEN;
-            Iterator repairIterator = cell.getRepairProteinCoordinatesIterator();
-            while(repairIterator.hasNext()){
-                Map.Entry coordinates = (Map.Entry)repairIterator.next();
-                int x = (int)coordinates.getKey();
-                int y = (int)coordinates.getValue();
+            int[][] repairCoordinates = cell.getRepairProteinCoordinates();
+            for(int i = 0; i < repairCoordinates[0].length; i++){
+                int x = repairCoordinates[0][i];
+                int y = repairCoordinates[1][i];
                 pen.drawCircle(x, y, cell.getRepairRadius(), repairProteinColor, true);
                 screen.update();
             }
@@ -205,8 +200,8 @@ public class Cells {
         return distance <= this.alphaRegionRadius;
     }
 
-    public void generateAlphaCoordinates(int alphaNum, Random random){
-        for(int i = 0; i < alphaNum; i++){
+    public void generateAlphaCoordinates(int numberOfAlphaParticles, Random random){
+        for(int i = 0; i < numberOfAlphaParticles; i++){
             int alphaX, alphaY;
             boolean iswithinAlphaRegion;
 

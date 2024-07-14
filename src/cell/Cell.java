@@ -10,28 +10,16 @@ public class Cell {
     private int x;
     private int y;
     private int cellRadius;
-
-    // TODO: Add comments
     private Nucleus nucleus;
-
-    // This is a default constructor, which assigns default values to the attributes if you don't
-    // explicitly set them.
-    public Cell(){
-        this.isCancerous = false;
-        this.x = 0;
-        this.y = 0;
-        this.cellRadius = 50;
-        this.nucleus = new Nucleus();
-    }
 
     // This is an overloaded constructor. When you create a Cell object, you can specify whether the cell
     // is cancerous, and the size of the 2D arrays. For example, Cell cell = new Cell(false, 10, 10);
-    public Cell(boolean isCancerous, int sizeN, int sizeM){
+    public Cell(boolean isCancerous, int numberOfCells){
         this.cellRadius = 50;
         this.x = 0;
         this.y = 0;
         this.isCancerous = isCancerous;
-        this.nucleus = new Nucleus(sizeN, sizeM);
+        this.nucleus = new Nucleus(numberOfCells);
     }
 
     public boolean getIsCancerous(){
@@ -44,20 +32,20 @@ public class Cell {
         this.isCancerous = isCancerous;
     }
 
-    public void setDNACoordinates(int x, int y){
-        this.nucleus.setDNACoordinates(x, y);
+    public void setDNACoordinates(int columnNumber, int x, int y){
+        this.nucleus.setDNACoordinates(columnNumber, x, y);
     }
 
-    public Iterator getDNACoordinatesIterator(){
-        return this.nucleus.getDNACoordinatesIterator();
+    public int[][] getDNACoordinates(){
+        return this.nucleus.getDNACoordinates();
     }
 
-    public void setRepairProteinCoordinates(int x, int y){
-        this.nucleus.setRepairProteinCoordinates(x, y);
+    public void setRepairProteinCoordinates(int columnNumber, int x, int y){
+        this.nucleus.setRepairProteinCoordinates(columnNumber, x, y);
     }
 
-    public Iterator getRepairProteinCoordinatesIterator(){
-        return this.nucleus.getRepairProteinCoordinatesIterator();
+    public int[][] getRepairProteinCoordinates(){
+        return this.nucleus.getRepairProteinCoordinates();
     }
 
    public void setX(int x){
