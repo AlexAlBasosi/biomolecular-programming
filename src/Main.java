@@ -6,8 +6,15 @@ import nano.*;
 
 import java.util.Random;
 
+/* This is the Main class. Here we handle the creation of all the objects that will be
+* used in the program.
+* */
+
 public class Main {
     public static void main(String[] args){
+
+        // We initialise the screen width and height, as well as the number of
+        // cells and other particles depicted in the simulation.
         int screenWidth = 2000;
         int screenHeight = 1300;
         int numberOfCells = 10;
@@ -16,13 +23,27 @@ public class Main {
         int numberOfAlphaParticles = 50;
         int numOfSteps = 1000;
 
+        // First we initialise an object of the Cells class, which contains important methods
+        // that contain the bulk of the application's logic. We pass in the
+        // numberOfAlphaParticles as a parameter.
         Cells cells = new Cells(numberOfAlphaParticles);
+
+        // Then we initialise an ArrayList of objects of the Cell class, which contain
+        // information about the cell.
         ArrayList<Cell> cellsList = cells.initialiseCells(numberOfCells, numberOfDNAParticles, numberOfRepairParticles);
 
+        // Here we initialise the canvas, passing in the screen width and height, create a
+        // new pen, and then generate a Random object that we can use to generate a random
+        // number.
         Canvas screen = new Canvas(screenWidth, screenHeight);
         Pen pen = new Pen(screen);
         Random random = new Random();
 
+
+        // Here we call the methods that are stored in the Cells object. These method
+        // include generating the cell coordinates, DNA proteins, repair proteins, the
+        // tumour region, the region our alpha particles initially sit out of, the alpha
+        // particles themselves, and the speeds of each alpha particle.
         cells.generateCellCoordinates(screenWidth, screenHeight, cellsList, random);
         cells.generateDNAProteins(cellsList, numberOfDNAParticles, random);
         cells.generateRepairProteins(cellsList, numberOfRepairParticles, random);
@@ -31,34 +52,12 @@ public class Main {
         cells.generateAlphaCoordinates(numberOfAlphaParticles, random);
         cells.generateAlphaSourceSpeeds(random);
 
+
+        // Finally, we run the canvas simulation, which is responsible for drawing all the
+        // different components within the class and calling all the methods used in this
+        // application.
         cells.runCanvasSimulation(screen, pen, cellsList, numOfSteps);
 
-        /*  alpha particle array
-            Row 0: Contains X Coordinates
-            Row 1: Contains Y Coordinates
-            Row 2: Contains X speeds
-            Rows 3: Contains Y speeds
-         */
-
-        /* DNA coordinate array
-        * row 0: Contains X coordinate
-        * row 1: Contains Y coordinates
-        * row 2: isDamaged (1 or 0)
-        * */
-
-        /* Repair protein array
-        * row 0: x coordinate
-        * row 1: y coordinate
-        * row 2: isBound (1 or 0)
-        * row 3: isReadyForRepair (1 or 0)
-        * row 4: index of bound DNA molecule
-        * */
-
-        // TODO: Add logic to bind repair protein to damaged DNA particles
-        // TODO: Add logic to convert to 'necrotic cell' when DNA particle damage exceeds threshold
-        // TODO: (if you can) add animation for binding repair protein to damaged DNA protein
-        // TODO: (if you can) add animation for moving molecules within nucleus
-        // TODO: Add comments
         // TODO: Update README
     }
 }
